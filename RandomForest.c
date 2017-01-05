@@ -27,7 +27,7 @@ TimeSerieArray sampleTimeSerie(TimeSerieArray D, int size){
 	TimeSerieArray samples = createTimeSerieArray(size);
 	int random_index;
 	for(int i=0; i<size; i++){
-		random_index = randomUniformIndex(size);
+		random_index = randomUniformIndex(0, size);
 		addTimeSerie(samples, getTimeSerie(D, random_index));
 	}
 	return samples;

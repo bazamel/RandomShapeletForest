@@ -22,3 +22,12 @@ TimeSerieArray createTimeSerieArray(int size){
 	TimeSerieArray result = malloc(sizeof(*result) * size);
 	result->size = 0;
 }
+
+TimeSerie createTimeSerie(double *values, int label, int size){
+	TimeSerie result = malloc(sizeof(*result)*size);
+	result->class_label = label;
+	for(int i=0; i<size; i++){
+		result->values[i]=values[i];
+	}
+	return result;
+}

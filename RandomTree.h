@@ -8,4 +8,8 @@ Split bestSplit(TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candi
 
 void distribute(Split split, TimeSerieArray left, TimeSerieArray right); 
  
-int randomUniformIndex(int max);
+int randomUniformIndex(int min, int max);
+
+int mostProbableLabel(TimeSerieArray array);
+
+int maxInt(int *array, int size);
