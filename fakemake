@@ -1,0 +1,6 @@
+#!/bin/bash
+gcc *.c -o Main
+#ar -cr libmine.a *.o 
+#mv libmine.a ./include
+#konsole -e ././bin/saisie
+./Main
