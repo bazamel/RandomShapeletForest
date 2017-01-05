@@ -1,4 +1,10 @@
 typedef struct RandomTree *RandomTree;
 
-RandomTree createRandomTree(TimeSerie *time_serie_samples, int l, int u, int r); 
+RandomTree createRandomTree(TimeSerieArray time_serie_samples, int l, int u, int r);
+
+Shapelet sampleShapelet(TimeSerieArray time_serie_samples, int l, int u);
+
+Split bestSplit(TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candidates);
+
+void distribute(Split split, TimeSerieArray left, TimeSerieArray right); 
  
