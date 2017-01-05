@@ -16,7 +16,7 @@ RandomTree createRandomTree(TimeSerieArray time_serie_samples, int l, int u, int
 	TimeSerieArray shapelet_candidates = malloc(sizeof(*shapelet_candidates) * r);
 	for(int i = 0; i<r; i++){
 		Shapelet candidate = sampleShapelet(time_serie_samples, l, u);
-		addShapelet(shapelet_candidates, candidate);
+		addTimeSerie(shapelet_candidates, candidate);
 	}
 	
 	//find the best split and distribute the time series instances according to it
@@ -51,6 +51,20 @@ Split bestSplit(TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candi
 
 void distribute(Split split, TimeSerieArray left, TimeSerieArray right){
 
+}
+
+int randomUniformIndex(int max){
+	if (max == RAND_MAX+1) { 
+		return rand(); 
+	}else{ 
+		long limit = (RAND_MAX / max)*max; 
+		int r; 
+		while (true){
+			r = rand();
+			if(r < limit) break;
+		}
+		return r % max; 
+	}
 }
 
  

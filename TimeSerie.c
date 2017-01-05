@@ -10,8 +10,12 @@ struct TimeSerieArray{
 	int size;
 }
 
-void addShapelet(TimeSerieArray array, TimeSerie time_serie){
+void addTimeSerie(TimeSerieArray array, TimeSerie time_serie){
 	array->time_series[array->size++] = time_series;
+}
+
+TimeSerie getTimeSerie(TimeSerieArray array, int index){
+	return array->time_series[index];
 }
 
 TimeSerieArray createTimeSerieArray(int size){
