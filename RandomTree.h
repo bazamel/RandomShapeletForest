@@ -1,1 +1,2 @@
+typedef struct RandomTree *RandomTree; 
  
