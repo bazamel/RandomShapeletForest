@@ -31,3 +31,7 @@ TimeSerie createTimeSerie(double *values, int label, int size){
 	}
 	return result;
 }
+
+int getLabel(TimeSerie s){
+	return s->class_label;
+}

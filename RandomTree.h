@@ -17,4 +17,4 @@ int maxInt(int *array, int size);
 double gain(Split split);
 double gap(Split split);
 
-double findBestThreshold(DistanceMap current_distance_map);
+double findBestThreshold(DistanceMap distance_map);

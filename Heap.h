@@ -1,31 +1,27 @@
-#ifndef TAS_MAX_H_INCLUDED
-#define TAS_MAX_H_INCLUDED
+#include "DistanceMap.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
 #include <stdbool.h>
 
-typedef struct tas *tas;
-typedef int sommet;
+typedef struct Heap* Heap;
 
-char getValeurT(tas T, sommet s);
-char valeurRac(tas T);
-sommet filsGT(sommet s);
-sommet filsDT(sommet s);
-sommet pereT(sommet s);
-bool tasPlein(tas T);
+Distance getHeapValue(Heap H, int index);
 
-tas creerT(char x);
-void ajouterT(tas T, char x);
-void changeValeurT(tas T, sommet s, char x);
-void supprimerT(tas T);
-void detruireT(tas T);
+int leftSon(int index);
 
-void reorganisationMT(tas T, sommet s);
-void reorganisationDT(tas T, sommet s);
+int rightSon(int index);
 
-bool estFeuilleT(tas T);
-void afficherTableauTas(tas T);
-void afficherTDecroissant(tas T);
+int father(int index);
 
-#endif // TAS_H_INCLUDED
+Heap createHeap(int size);
+
+void addToHeap(Heap T, Distance distance);
+
+void deleteFromHeap(Heap T);
+
+void destroyHeap(Heap T);
+
+void reorganizeUp(Heap T, int s);
+
+void reorganizeDown(Heap T, int s);

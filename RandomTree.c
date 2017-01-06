@@ -68,8 +68,8 @@ Split bestSplit(TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candi
 		//find best threshold
 		Split current_split = createSplit(candidate, findBestThreshold(current_distance_map));
 		//update best threshold
-		double current_gain = gain(current_split);
-		double best_gain = gain(best_split); 
+		double current_gain = gain(current_split); //TODO
+		double best_gain = gain(best_split); //TODO
 		if(current_gain > best_gain || (current_gain == best_gain && gap(current_split) > gap(best_split))){
 			best_split = current_split;
 		}
@@ -130,18 +130,42 @@ int maxInt(int *array, int size){
 	return max_index;
 }
 
+///////////////////// TODO /////////////////////////////////
 double gain(Split split){
 	double result = 0;
 	return result;
 }
 
+///////////////////// TODO /////////////////////////////////
 double gap(Split split){
 	double result = 0;
 	return result;
 }
 
-double findBestThreshold(DistanceMap current_distance_map){
+///////////////////// TODO /////////////////////////////////
+double findBestThreshold(DistanceMap distance_map){
 	double best_threshold = INFINITY;
+	// copy distance map
+	DistanceMap map = cloneDistanceMap(distance_map);
+	int previous_label = -1;
+	int size = map->size;
+	double best_gain = 0;
+	double best_gap = 0;
+
 	//evaluate the best threshold from the mid point in terms of information gain and/or separation gap
+	for(int i= 0; i<size; i++){
+		// when the class label varies, compute gain
+		int current_label = getDistanceLabel(getDistance(map));
+		// if current gain is equal to best gain, compute separation gap and take the max 
+		if(previous_label != -1 && previous_label != current_label){
+			double current_gain = gain(); //TODO
+			double current_gap = gap(); //TODO
+			if(current_gain > best_gain || (current_gain == best_gain && current_gap>best_gap)){
+				best_gain = current_gain;
+				best_gap = current_gap;
+			}
+		}
+		previous_label = current_label;
+	}
 	return best_threshold;
 }

@@ -1,119 +1,80 @@
-#include "tas_max.h"
+#include "Heap.h"
 
-#define TAILLE 10
-
-struct tas{
-    char tab[TAILLE];
-    int tailleTas;
+struct Heap{
+    Distance *array;
+    int size;
 };
 
-char getValeurT(tas T, sommet s){
-    return T->tab[s];
+Distance getHeapValue(Heap H, int index){
+    return T->tab[index];
 }
 
-char valeurRac(tas T){
-    return T->tab[1];
+int leftSon(int index){
+    return index*2;
 }
 
-sommet filsGT(sommet s){
-    return s*2;
+int rightSon(int index){
+    return index*2+1;
 }
 
-sommet filsDT(sommet s){
-    return s*2+1;
+int father(int index){
+    return index/2;
 }
 
-sommet pereT(sommet s){
-    return s/2;
-}
-
-
-tas creerT(char x){
-    tas T = malloc(sizeof(*T));
-    T->tab[0] = '#';
-    T->tab[1] = x;
-    T->tailleTas = 2;
+Heap createHeap(int size){
+    Heap T = malloc(sizeof(*T));
+    T->array = malloc(sizeof(Distance)*size);
+    T->array[0] = NULL;
+    T->size = 1;
     return T;
 }
 
-void ajouterT(tas T, char x){
-    T->tab[T->tailleTas] = x;
-    reorganisationMT(T,T->tailleTas);
-    T->tailleTas++;
+void addToHeap(Heap T, Distance distance){
+    T->array[T->size] = distance;
+    reorganizeUp(T,T->size);
+    T->size++;
 }
 
-void supprimerT(tas T){
-    --(T->tailleTas);
-    T->tab[1] = T->tab[T->tailleTas];
-    reorganisationDT(T, 1);
+void deleteFromHeap(Heap T){
+    --(T->size);
+    T->array[1] = T->array[T->size];
+    reorganizeDown(T, 1);
 }
 
-void detruireT(tas T){
+void destroyHeap(Heap T){
     free(T);
 }
 
-void reorganisationMT(tas T, sommet s){
+void reorganizeUp(Heap T, int s){
     if(s != 1){
-        sommet p = pereT(s);
-        if(getValeurT(T,p) > getValeurT(T,s)){
-            char tmp = T->tab[p];
-            T->tab[p] = T->tab[s];
-            T->tab[s] = tmp;
-            reorganisationMT(T, pereT(s));
+        int p = father(s);
+        double distance1 = getDistanceValue(getHeapValue(T,p));
+        double distance2 = getDistanceValue(getHeapValue(T,s));
+        if(distance1 < distance2){
+            char tmp = T->array[p];
+            T->array[p] = T->array[s];
+            T->array[s] = tmp;
+            reorganizeUp(T, p);
         }
     }
 }
 
-void reorganisationDT(tas T, sommet s){
-    if(s < (T->tailleTas)){
-        sommet o = filsGT(s);
-        sommet p = filsDT(s);
-        if(o < T->tailleTas){
-            if(p < T->tailleTas){
-                if(getValeurT(T,p)<getValeurT(T,o)){
+void reorganizeDown(Heap T, int s){
+    if(s < T->size){
+        int o = leftSon(s);
+        int p = rightSon(s);
+        if(o < T->size){
+            if(p < T->size){
+                if(getDistanceValue(getHeapValue(T,p)) > getDistanceValue(getHeapValue(T,o))){
                     o=p;
                 }
             }
-            if(getValeurT(T,o)<getValeurT(T,s)){
-                char tmp = T->tab[o];
-                T->tab[o] = T->tab[s];
-                T->tab[s] = tmp;
-                reorganisationDT(T,o);
+            if(getDistanceValue(getHeapValue(T,o)) > getDistanceValue(getHeapValue(T,s))){
+                char tmp = T->array[o];
+                T->array[o] = T->array[s];
+                T->array[s] = tmp;
+                reorganizeDown(T,o);
             }
         }
     }
-}
-
-bool estFeuilleT(tas T){
-    return(T->tailleTas == 2);
-}
-
-void changeValeurT(tas T, sommet s, char x){
-    T->tab[s] = x;
-    if(getValeurT(T,s)>getValeurT(T,pereT(s))){
-        reorganisationMT(T,s);
-    }
-    if(getValeurT(T,s)<getValeurT(T,filsDT(s)) || getValeurT(T,s)<getValeurT(T,filsGT(s))){
-        reorganisationDT(T,s);
-    }
-}
-
-void afficherTableauTas(tas T){
-    int i = 1;
-    while(i<T->tailleTas-1){
-        printf("%c", getValeurT(T, i));
-        i++;
-    }
-    printf("%c", getValeurT(T,i));
-    printf("\n");
-}
-
-void afficherTDecroissant(tas T){
-    printf("Affichage par suppression : ");
-    while(!estFeuilleT(T)){
-        printf("%c", valeurRac(T));
-        supprimerT(T);
-    }
-    printf("%c", valeurRac(T));
-    printf("\n");
 }
