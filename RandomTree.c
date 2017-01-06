@@ -1,6 +1,7 @@
 #include "RandomTree.h"
 #include "TimeSerie.h"
 #include "Split.h"
+#include <math.h>
 
 struct RandomTree{
     RandomTree left_son;
@@ -51,22 +52,47 @@ Shapelet sampleShapelet(TimeSerieArray time_serie_samples, int l, int u){
 
 ///////////////////// TODO /////////////////////////////////
 Split bestSplit(TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candidates){
+	int number_of_candidates = shapelet_candidates->size;
+	int sample_size = time_serie_samples->size;
+	Split best_split = createSplit(NULL, INFINITY);
+	DistanceMap best_distance_map = createDistanceMap();
 
+	for(int i=0; i<number_of_candidates; i++){
+		Shapelet candidate = getTimeSerie(shapelet_candidates, i);
+		DistanceMap current_distance_map = createDistanceMap();
+		for(int j=0; j<sample_size; j++){
+			TimeSerie instance = getTimeSerie(time_serie_samples, j);
+			Distance current_distance = computeEarlyAbandonSlidingDistance(instance, candidate);
+			addDistance(current_distance_map, current_distance);
+		}
+		//find best threshold
+		Split current_split = createSplit(candidate, findBestThreshold(current_distance_map));
+		//update best threshold
+		double current_gain = gain(current_split);
+		double best_gain = gain(best_split); 
+		if(current_gain > best_gain || (current_gain == best_gain && gap(current_split) > gap(best_split))){
+			best_split = current_split;
+		}
+	}
+	return best_split;
 }
 
-void distribute(Split split, TimeSerieArray whole_array, TimeSerieArray left, TimeSerieArray right, DistanceMap distance_map){
+// DONE
+void distribute(Split split, TimeSerieArray left, TimeSerieArray right, DistanceMap distance_map){
 	int size = whole_array->size;
 	for(int i=0; i<size; i++){
-		if(distance_map->distances[i]->value > split->distance_threshold){
-			addTimeSerie(right, getTimeSerie(whole_array, i));
+		Distance current_distance = distance_map->distances[i]; 
+		if(current_distance->value > split->distance_threshold){
+			addTimeSerie(right, current_distance->instance);
 		}else{
-			addTimeSerie(left, getTimeSerie(whole_array, i));
+			addTimeSerie(left, current_distance->instance);
 		}
 	}
 }
 
 // DONE
 int randomUniformIndex(int min, int max){
+// return a random uniform number between min and max
 	return min + rand() / (RAND_MAX / (max - min) + 1);
 }
 
@@ -104,4 +130,18 @@ int maxInt(int *array, int size){
 	return max_index;
 }
 
- 
+double gain(Split split){
+	double result = 0;
+	return result;
+}
+
+double gap(Split split){
+	double result = 0;
+	return result;
+}
+
+double findBestThreshold(DistanceMap current_distance_map){
+	double best_threshold = INFINITY;
+	//evaluate the best threshold from the mid point in terms of information gain and/or separation gap
+	return best_threshold;
+}

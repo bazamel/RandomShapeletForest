@@ -13,3 +13,8 @@ int randomUniformIndex(int min, int max);
 int mostProbableLabel(TimeSerieArray array);
 
 int maxInt(int *array, int size);
+
+double gain(Split split);
+double gap(Split split);
+
+double findBestThreshold(DistanceMap current_distance_map);

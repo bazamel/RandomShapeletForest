@@ -2,5 +2,12 @@
 
 struct Split{
     Shapelet shapelet;
-    Double distance_threshold;
+    double distance_threshold;
 }; 
+
+Split createSplit(Shapelet shapelet, double distance){
+	Split result = malloc(sizeof(*result));
+	result->shapelet = shapelet;
+	result->distance_threshold = distance;
+	return result;
+}
