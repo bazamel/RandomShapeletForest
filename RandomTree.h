@@ -6,7 +6,7 @@ Shapelet sampleShapelet(TimeSerieArray time_serie_samples, int l, int u);
 
 Split bestSplit(TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candidates);
 
-void distribute(Split split, TimeSerieArray left, TimeSerieArray right); 
+void distribute(Split split, TimeSerieArray whole_array, TimeSerieArray left, TimeSerieArray right, DistanceMap distance_map); 
  
 int randomUniformIndex(int min, int max);
 

@@ -2,5 +2,5 @@
 
 struct Split{
     Shapelet shapelet;
-    Threshold distance_threshold;
+    Double distance_threshold;
 }; 

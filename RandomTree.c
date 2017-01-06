@@ -24,7 +24,7 @@ RandomTree createRandomTree(TimeSerieArray time_serie_samples, int l, int u, int
 	tree->split = bestSplit(time_serie_samples, shapelet_candidates);
 	TimeSerieArray left_son = createTimeSerieArray(r);
 	TimeSerieArray right_son = createTimeSerieArray(r);
-	distribute(tree->split, left_son, right_son);
+	distribute(tree->split, time_serie_samples, left_son, right_son);
 	
 	//grow the tree recursively
 	if(left_son->size == 0 || right_son->size == 0){
@@ -54,9 +54,15 @@ Split bestSplit(TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candi
 
 }
 
-///////////////////// TODO /////////////////////////////////
-void distribute(Split split, TimeSerieArray left, TimeSerieArray right){
-
+void distribute(Split split, TimeSerieArray whole_array, TimeSerieArray left, TimeSerieArray right, DistanceMap distance_map){
+	int size = whole_array->size;
+	for(int i=0; i<size; i++){
+		if(distance_map->distances[i]->value > split->distance_threshold){
+			addTimeSerie(right, getTimeSerie(whole_array, i));
+		}else{
+			addTimeSerie(left, getTimeSerie(whole_array, i));
+		}
+	}
 }
 
 // DONE

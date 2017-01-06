@@ -1,6 +1,11 @@
 #!/bin/bash
-gcc *.c -o Main
+okular ../papers/1.pdf&
+okular ../papers/2.pdf&
+okular ../papers/3.pdf&
+sudo subl *.c
+sudo subl *.h
+#gcc *.c -o Main
 #ar -cr libmine.a *.o 
 #mv libmine.a ./include
 #konsole -e ././bin/saisie
-./Main
+#./Main
