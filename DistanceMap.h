@@ -7,4 +7,5 @@ Distance computeEarlyAbandonSlidingDistance(TimeSerie instance, Shapelet candida
 double getDistanceValue(Distance distance);
 int getDistanceLabel(Distance distance);
 Distance getDistance(DistanceMap map);
+Distance getDistanceByIndex(DistanceMap map, int index);
 DistanceMap cloneDistanceMap(DistanceMap distance_map);

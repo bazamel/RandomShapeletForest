@@ -6,6 +6,7 @@
 struct RandomTree{
     RandomTree left_son;
     RandomTree right_son;
+    RandomTree father;
     Split split;
     int label;
 }; 
@@ -22,7 +23,7 @@ RandomTree createRandomTree(TimeSerieArray time_serie_samples, int l, int u, int
 	}
 	
 	//find the best split and distribute the time series instances according to it
-	tree->split = bestSplit(time_serie_samples, shapelet_candidates);
+	tree->split = bestSplit(tree, time_serie_samples, shapelet_candidates);
 	TimeSerieArray left_son = createTimeSerieArray(r);
 	TimeSerieArray right_son = createTimeSerieArray(r);
 	distribute(tree->split, time_serie_samples, left_son, right_son);
@@ -50,11 +51,11 @@ Shapelet sampleShapelet(TimeSerieArray time_serie_samples, int l, int u){
 	return createTimeSerie(time_serie[start_position], time_serie->class_label, candidate_size);
 }
 
-///////////////////// TODO /////////////////////////////////
-Split bestSplit(TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candidates){
+// DONE
+Split bestSplit(RandomTree tree, TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candidates){
 	int number_of_candidates = shapelet_candidates->size;
 	int sample_size = time_serie_samples->size;
-	Split best_split = createSplit(NULL, INFINITY);
+	Split best_split = createSplit(NULL, 0, 0, 0);
 	DistanceMap best_distance_map = createDistanceMap();
 
 	for(int i=0; i<number_of_candidates; i++){
@@ -66,11 +67,12 @@ Split bestSplit(TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candi
 			addDistance(current_distance_map, current_distance);
 		}
 		//find best threshold
-		Split current_split = createSplit(candidate, findBestThreshold(current_distance_map));
+		double *split_components = findBestThreshold(tree, current_distance_map);
+		Split current_split = createSplit(candidate, split_components[0], split_components[1], split_components[2]); //parameters : shapelet candidate, best threshold, best gain, best gap
 		//update best threshold
-		double current_gain = gain(current_split); //TODO
-		double best_gain = gain(best_split); //TODO
-		if(current_gain > best_gain || (current_gain == best_gain && gap(current_split) > gap(best_split))){
+		double current_gain = getGain(current_split);
+		double best_gain = getGain(best_split);
+		if(current_gain > best_gain || (current_gain == best_gain && getGap(current_split) > getGap(best_split))){
 			best_split = current_split;
 		}
 	}
@@ -131,23 +133,37 @@ int maxInt(int *array, int size){
 }
 
 ///////////////////// TODO /////////////////////////////////
-double gain(Split split){
+double gain(DistanceMap distance_map, int split_index){
 	double result = 0;
+	// info gain is the difference between the sum of entropy at the child nodes weighted by the fraction of examples at a particular node, and the entropy at the parent node
+	// assess number of labels
+	// compute the father entropy : always getDistanceByIndex() instead of getDistance() in this function
+	// separate the distance map in two new distance maps : left child, right child
+	// compute the children entropies : getDistanceByIndex()
+	// compute the info gain
 	return result;
 }
 
 ///////////////////// TODO /////////////////////////////////
-double gap(Split split){
+double gap(DistanceMap distance_map, int split_index){
 	double result = 0;
+	// sep gap = sum of right/left subdistances to the candidate divided by the number of right/left instances
 	return result;
 }
 
 ///////////////////// TODO /////////////////////////////////
-double findBestThreshold(DistanceMap distance_map){
-	double best_threshold = INFINITY;
+double entropy(DistanceMap distance_map, int number_of_labels){
+	// assess probability of each label (counting)
+	// compute entropy
+}
+
+// DONE
+double *findBestThreshold(RandomTree tree, DistanceMap distance_map){
+	double best_threshold = 0;
 	// copy distance map
 	DistanceMap map = cloneDistanceMap(distance_map);
 	int previous_label = -1;
+	int previous_threshold = 0;
 	int size = map->size;
 	double best_gain = 0;
 	double best_gap = 0;
@@ -155,17 +171,25 @@ double findBestThreshold(DistanceMap distance_map){
 	//evaluate the best threshold from the mid point in terms of information gain and/or separation gap
 	for(int i= 0; i<size; i++){
 		// when the class label varies, compute gain
-		int current_label = getDistanceLabel(getDistance(map));
+		Distance current_distance = getDistance(map);
+		double current_threshold = (getDistanceValue(current_distance)+previous_threshold)/2.0; //threshold from the mid points
+		int current_label = getDistanceLabel(current_distance);
 		// if current gain is equal to best gain, compute separation gap and take the max 
 		if(previous_label != -1 && previous_label != current_label){
-			double current_gain = gain(); //TODO
-			double current_gap = gap(); //TODO
-			if(current_gain > best_gain || (current_gain == best_gain && current_gap>best_gap)){
+			double current_gain = gain(distance_map, i);
+			double current_gap = gap(distance_map, i);
+			if(current_gain > best_gain ||(current_gain == best_gain && current_gap > best_gap)){
 				best_gain = current_gain;
 				best_gap = current_gap;
+				best_threshold = current_threshold;
 			}
 		}
 		previous_label = current_label;
+		previous_threshold = current_threshold;
 	}
-	return best_threshold;
+	double *result = malloc(sizeof(double)*3);
+	result[0] = best_threshold;
+	result[1] = best_gain;
+	result[2] = best_gap;
+	return result;
 }

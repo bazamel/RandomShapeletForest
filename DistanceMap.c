@@ -28,6 +28,7 @@ void addDistance(DistanceMap distance_map, Distance distance){
 	distance_map->size++;
 }
 
+///////////////////// TODO /////////////////////////////////
 Distance computeEarlyAbandonSlidingDistance(TimeSerie instance, Shapelet candidate){
 
 }
@@ -44,6 +45,10 @@ Distance getDistance(DistanceMap map){
 	Distance result = getHeapValue(map->distances, 1);
 	deleteFromHeap(map->distances);
 	return result;
+}
+
+Distance getDistanceByIndex(DistanceMap map, int index){
+	return getHeapValue(map->distances, index);
 }
 
 DistanceMap cloneDistanceMap(DistanceMap distance_map){

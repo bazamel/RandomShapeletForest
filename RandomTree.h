@@ -4,7 +4,7 @@ RandomTree createRandomTree(TimeSerieArray time_serie_samples, int l, int u, int
 
 Shapelet sampleShapelet(TimeSerieArray time_serie_samples, int l, int u);
 
-Split bestSplit(TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candidates);
+Split bestSplit(RandomTree tree, TimeSerieArray time_serie_samples, TimeSerieArray shapelet_candidates);
 
 void distribute(Split split, TimeSerieArray whole_array, TimeSerieArray left, TimeSerieArray right, DistanceMap distance_map); 
  
@@ -14,7 +14,8 @@ int mostProbableLabel(TimeSerieArray array);
 
 int maxInt(int *array, int size);
 
-double gain(Split split);
-double gap(Split split);
+double gain(DistanceMap distance_map, int split_index);
+double gap(DistanceMap distance_map, int split_index);
+double entropy(DistanceMap distance_map, int number_of_labels);
 
-double findBestThreshold(DistanceMap distance_map);
+double *findBestThreshold(RandomTree tree, DistanceMap distance_map);
