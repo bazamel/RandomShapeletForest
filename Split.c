@@ -5,14 +5,16 @@ struct Split{
     double distance_threshold;
     double gain;
     double gap;
+    DistanceMap distance_map;
 }; 
 
-Split createSplit(Shapelet shapelet, double distance, double gain, double gap){
+Split createSplit(TimeSerie shapelet, double distance, double gain, double gap, DistanceMap distance_map){
 	Split result = malloc(sizeof(*result));
 	result->shapelet = shapelet;
 	result->distance_threshold = distance;
 	result->gain = gain;
 	result->gap = gap;
+	result->distance_map = distance_map;
 	return result;
 }
 
@@ -26,4 +28,8 @@ double getGap(Split split){
 
 double getThreshold(Split split){
 	return split->distance_threshold;
+}
+
+DistanceMap getSplitDistanceMap(Split s){
+	return s->distance_map;
 }

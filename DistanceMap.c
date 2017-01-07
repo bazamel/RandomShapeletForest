@@ -1,18 +1,8 @@
-#include "RandomForest.h"
-#include "RandomTree.h"
-#include "TimeSerie.h"
-#include "Heap.h"
-#include <time.h>
+#include "DistanceMap.h"
 
 struct DistanceMap{
     Heap distances;
     int size;
-}; 
-
-struct Distance{
-    double value;
-    Shapelet candidate;
-    TimeSerie instance;
 }; 
 
 DistanceMap createDistanceMap(int size){
@@ -30,13 +20,10 @@ void addDistance(DistanceMap distance_map, Distance distance){
 
 Distance computeEarlyAbandonSlidingDistance(TimeSerie instance, Shapelet candidate){
 	double min_distance = INFINITY;
-	Distance result = malloc(sizeof(*result));
-	result->instance = instance;
-	result->candidate = candidate;
 
 	int candidate_size = sizeof(getSequence(candidate))/sizeof(double);
 	int instance_size = sizeof(getSequence(instance))/sizeof(double);
-	TimeSerie ts1, TimeSerie ts2;
+	TimeSerie ts1, ts2;
 	if(candidate_size<=instance_size){
 		ts1 = instance;
 		ts2 = candidate;
@@ -52,7 +39,8 @@ Distance computeEarlyAbandonSlidingDistance(TimeSerie instance, Shapelet candida
 	double *t = malloc(sizeof(double)*candidate_size*2);
 	double ex1 = 0;
 	double ex2 = 0;
-	for(int i=0; i<instance_size; i++){
+	int i;
+	for(i=0; i<instance_size; i++){
 		double d = getSequence(ts1)[i];
 		ex1 += d;
 		ex2 += d*d;
@@ -71,28 +59,18 @@ Distance computeEarlyAbandonSlidingDistance(TimeSerie instance, Shapelet candida
 			ex2-=t[j]*t[j];
 		}
 	}
-	return sqrt(min_distance/candidate_size);
+
+	return createDistance(sqrt(min_distance/candidate_size), instance, candidate);
 }
 
 double computeEuclideanDistance(double *sequence, double *t, int j, int candidate_size, double mean, double sigma, double min_distance){
 	double sum = 0;
-	for(int i = 0; i<candidate_size && sum<min_distance; i++){
-		double x = (t[i+j]-mean)/std - sequence[i]; //z-normalization
+	int i;
+	for(i = 0; i<candidate_size && sum<min_distance; i++){
+		double x = (t[i+j]-mean)/sigma - sequence[i]; //z-normalization
 		sum += x*x;
 	}
 	return sum;
-}
-
-double getDistanceValue(Distance distance){
-	return distance->value;
-}
-
-int getDistanceLabel(Distance distance){
-	return getLabel(distance->candidate);
-}
-
-TimeSerie getDistanceInstance(Distance d){
-	return d->instance;
 }
 
 int getDistanceMapSize(DistanceMap d){
@@ -113,7 +91,8 @@ DistanceMap cloneDistanceMap(DistanceMap distance_map){
 	int size = distance_map->size;
 	DistanceMap result = createDistanceMap(size);
 	Heap target = distance_map->distances;
-	for(int i = 0; i<size; i++){
+	int i;
+	for(i = 0; i<size; i++){
 		addToHeap(result->distances, getHeapValue(target, i));
 	} 
 	return result;

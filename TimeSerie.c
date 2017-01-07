@@ -9,10 +9,10 @@ struct TimeSerie{
 struct TimeSerieArray{
 	TimeSerie *time_series;
 	int size;
-}
+};
 
 void addTimeSerie(TimeSerieArray array, TimeSerie time_serie){
-	array->time_series[array->size++] = time_series;
+	array->time_series[array->size++] = time_serie;
 }
 
 TimeSerie getTimeSerie(TimeSerieArray array, int index){
@@ -34,8 +34,9 @@ TimeSerieArray readFromFile(char *file){
 		double *time_serie = malloc(sizeof(double)*MAX_LINES);
 		int j=0, k=0;
 		int label;
-		for(int i=0; current_char[i]; i++){
-			if(current_char == '\n'){
+		int i;
+		for(i=0; current_char[i]; i++){
+			if(current_char[i] == '\n'){
 				if(isLabel){
 					label = atoi(value);
 					isLabel = 0;
@@ -61,7 +62,8 @@ TimeSerie createTimeSerie(double *values, int label, int size){
 	TimeSerie result = malloc(sizeof(*result)*size);
 	result->class_label = label;
 	result->values = malloc(sizeof(double)*size);
-	for(int i=0; i<size; i++){
+	int i;
+	for(i=0; i<size; i++){
 		result->values[i]=values[i];
 	}
 	return result;

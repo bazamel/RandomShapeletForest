@@ -1,5 +1,7 @@
-typedef struct RandomForest *RandomForest; 
+#include <time.h>
+#include "RandomTree.h"
 
+typedef struct RandomForest *RandomForest; 
 
 RandomForest createRandomForest(TimeSerieArray D, int t, int l, int u, int r);
 
