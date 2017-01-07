@@ -30,7 +30,7 @@ void addDistance(DistanceMap distance_map, Distance distance){
 
 ///////////////////// TODO /////////////////////////////////
 Distance computeEarlyAbandonSlidingDistance(TimeSerie instance, Shapelet candidate){
-
+	
 }
 
 double getDistanceValue(Distance distance){
@@ -39,6 +39,14 @@ double getDistanceValue(Distance distance){
 
 int getDistanceLabel(Distance distance){
 	return getLabel(distance->candidate);
+}
+
+TimeSerie getDistanceInstance(Distance d){
+	return d->instance;
+}
+
+int getDistanceMapSize(DistanceMap d){
+	return d->size;
 }
 
 Distance getDistance(DistanceMap map){

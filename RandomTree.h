@@ -16,6 +16,6 @@ int maxInt(int *array, int size);
 
 double gain(DistanceMap distance_map, int split_index);
 double gap(DistanceMap distance_map, int split_index);
-double entropy(DistanceMap distance_map, int number_of_labels);
+double entropy(double *label_counter, int size);
 
 double *findBestThreshold(RandomTree tree, DistanceMap distance_map);

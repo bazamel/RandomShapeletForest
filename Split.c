@@ -23,3 +23,7 @@ double getGain(Split split){
 double getGap(Split split){
 	return split->gap;
 }
+
+double getThreshold(Split split){
+	return split->distance_threshold;
+}

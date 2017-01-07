@@ -23,6 +23,12 @@ TimeSerieArray createTimeSerieArray(int size){
 	result->size = 0;
 }
 
+///////////////////// TODO /////////////////////////////////
+TimeSerieArray readFromFile(char *file){
+	int number_of_lines = 
+	TimeSerieArray result = createTimeSerieArray(number_of_lines);
+}
+
 TimeSerie createTimeSerie(double *values, int label, int size){
 	TimeSerie result = malloc(sizeof(*result)*size);
 	result->class_label = label;
@@ -34,4 +40,12 @@ TimeSerie createTimeSerie(double *values, int label, int size){
 
 int getLabel(TimeSerie s){
 	return s->class_label;
+}
+
+double *getSequence(TimeSerie s){
+	return s->values;
+}
+
+int getTimeSerieArraySize(TimeSerieArray t){
+	return t->size;
 }

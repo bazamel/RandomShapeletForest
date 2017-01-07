@@ -12,7 +12,7 @@ struct RandomForest{
 RandomForest createRandomForest(TimeSerieArray D, int t, int l, int u, int r){
 	RandomForest random_forest = malloc(sizeof(*random_forest));
 	random_forest->size = 0;
-	random_forest->trees = malloc(sizeof(*random_forest->trees) * t);
+	random_forest->trees = malloc(sizeof(RandomTree) * t);
 
 	srand(time(NULL)); //needed in sampleTimeSerie
 	while(random_forest->size < t){
