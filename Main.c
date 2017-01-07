@@ -5,7 +5,7 @@ int main(){
 	printf("\n");
 	printf("BEGINNING");
 
-	
+	testTimeSerie();
 
 	printf("ENDING");
 	printf("\n");

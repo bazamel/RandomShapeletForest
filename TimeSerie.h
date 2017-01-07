@@ -8,19 +8,28 @@ typedef struct TimeSerie *TimeSerie;
 typedef struct TimeSerie *Shapelet; 
 typedef struct TimeSerieArray *TimeSerieArray;
 
-void addTimeSerie(TimeSerieArray array, TimeSerie time_serie);
+void addTimeSerie(TimeSerieArray array, TimeSerie time_serie); //TESTED
 
-TimeSerie getTimeSerie(TimeSerieArray array, int index);
+TimeSerie getTimeSerie(TimeSerieArray array, int index); //TESTED
 
-TimeSerieArray createTimeSerieArray(int size);
-TimeSerieArray readFromFile(char *file);
+TimeSerieArray createTimeSerieArray(int size); //TESTED
 
-TimeSerie createTimeSerie(double *values, int label, int size);
+TimeSerieArray readFromFile(char *file); //TESTED
 
-int getLabel(TimeSerie s);
+TimeSerie createTimeSerie(double *values, int label, int size); //TESTED
 
-double *getSequence(TimeSerie s);
+int getLabel(TimeSerie s); //TESTED
 
-int getTimeSerieArraySize(TimeSerieArray t);
+double *getSequence(TimeSerie s); //TESTED
+
+int getTimeSerieArraySize(TimeSerieArray t); //TESTED
+
+void testTimeSerie();
+
+void toString(TimeSerie s); //TESTED
+
+void destroyTimeSerieArray(TimeSerieArray t); //TESTED
+
+void destroyTimeSerie(TimeSerie t); //TESTED
 
 #endif
