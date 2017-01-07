@@ -28,9 +28,59 @@ void addDistance(DistanceMap distance_map, Distance distance){
 	distance_map->size++;
 }
 
-///////////////////// TODO /////////////////////////////////
 Distance computeEarlyAbandonSlidingDistance(TimeSerie instance, Shapelet candidate){
-	
+	double min_distance = INFINITY;
+	Distance result = malloc(sizeof(*result));
+	result->instance = instance;
+	result->candidate = candidate;
+
+	int candidate_size = sizeof(getSequence(candidate))/sizeof(double);
+	int instance_size = sizeof(getSequence(instance))/sizeof(double);
+	TimeSerie ts1, TimeSerie ts2;
+	if(candidate_size<=instance_size){
+		ts1 = instance;
+		ts2 = candidate;
+	}else{
+		// else, switch
+		ts1 = candidate;
+		ts2 = instance;
+		int tmp = candidate_size;
+		candidate_size = instance_size;
+		instance_size = tmp;
+	}
+
+	double *t = malloc(sizeof(double)*candidate_size*2);
+	double ex1 = 0;
+	double ex2 = 0;
+	for(int i=0; i<instance_size; i++){
+		double d = getSequence(ts1)[i];
+		ex1 += d;
+		ex2 += d*d;
+		t[i%candidate_size] = d;
+		t[(i%candidate_size)+candidate_size] = d;
+
+		if(i>=candidate_size-1){
+			int j = (i+1)%candidate_size;
+			double mean = ex1/candidate_size;
+			double sigma = sqrt(ex2/candidate_size - mean*mean);
+			double distance = computeEuclideanDistance(getSequence(ts2), t, j, candidate_size, mean, sigma, min_distance);
+			if(distance < min_distance){
+				min_distance = distance;
+			}
+			ex1-=t[j];
+			ex2-=t[j]*t[j];
+		}
+	}
+	return sqrt(min_distance/candidate_size);
+}
+
+double computeEuclideanDistance(double *sequence, double *t, int j, int candidate_size, double mean, double sigma, double min_distance){
+	double sum = 0;
+	for(int i = 0; i<candidate_size && sum<min_distance; i++){
+		double x = (t[i+j]-mean)/std - sequence[i]; //z-normalization
+		sum += x*x;
+	}
+	return sum;
 }
 
 double getDistanceValue(Distance distance){
