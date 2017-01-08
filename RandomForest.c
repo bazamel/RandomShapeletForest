@@ -13,9 +13,11 @@ RandomForest createRandomForest(TimeSerieArray D, int t, int l, int u, int r){
 
 	srand(time(NULL)); //needed in sampleTimeSerie
 	while(random_forest->size < t){
-		TimeSerieArray time_serie_samples = sampleTimeSerie(D, getTimeSerieArraySize(D)); //contains samples and associated class labels
+		int dataset_size = getTimeSerieArraySize(D);
+		TimeSerieArray time_serie_samples = sampleTimeSerie(D, dataset_size); //contains samples and associated class labels
 		RandomTree random_tree = createRandomTree(time_serie_samples, l, u, r);
-		addTree(random_forest, random_tree);
+		// addTree(random_forest, random_tree);
+		random_forest->size++;
 	}
 	return random_forest;
 }
@@ -26,7 +28,8 @@ TimeSerieArray sampleTimeSerie(TimeSerieArray D, int size){
 	int i;
 	for(i=0; i<size; i++){
 		random_index = randomUniformIndex(0, size);
-		addTimeSerie(samples, getTimeSerie(D, random_index));
+		TimeSerie selected = getTimeSerie(D, random_index);
+		addTimeSerie(samples, selected);
 	}
 	return samples;
 } 

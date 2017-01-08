@@ -83,6 +83,10 @@ double *getSequence(TimeSerie s){
 	return s->values;
 }
 
+int getTimeSerieSize(TimeSerie s){
+	return s->size;
+}
+
 int getTimeSerieArraySize(TimeSerieArray t){
 	return t->size;
 }
@@ -90,7 +94,7 @@ int getTimeSerieArraySize(TimeSerieArray t){
 void testTimeSerie(){
 	TimeSerieArray t = readFromFile("./dataset/synthetic_control.txt");
 
-	// int size = getTimeSerieArraySize(t);
+	int size = getTimeSerieArraySize(t);
 	// int i;
 	// for(i=0; i<size; i++){
 	// 	toString(getTimeSerie(t, i));

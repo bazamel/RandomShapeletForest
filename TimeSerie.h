@@ -20,6 +20,8 @@ TimeSerie createTimeSerie(double *values, int label, int size); //TESTED
 
 int getLabel(TimeSerie s); //TESTED
 
+int getTimeSerieSize(TimeSerie s); //TESTED
+
 double *getSequence(TimeSerie s); //TESTED
 
 int getTimeSerieArraySize(TimeSerieArray t); //TESTED

@@ -1,3 +1,9 @@
+
+
+// ////////////
+// WARNING : the Heap first value index is 1, not 0 !!!!!!!!!!!
+// ////////////
+
 #include "DistanceMap.h"
 
 struct DistanceMap{
@@ -12,6 +18,11 @@ DistanceMap createDistanceMap(int size){
 	return result;
 }
 
+void destroyDistanceMap(DistanceMap dm){
+	destroyHeap(dm->distances);
+	free(dm);
+}
+
 // the distances shall be sorted after the addition of one isntance
 void addDistance(DistanceMap distance_map, Distance distance){
 	addToHeap(distance_map->distances, distance);
@@ -21,8 +32,8 @@ void addDistance(DistanceMap distance_map, Distance distance){
 Distance computeEarlyAbandonSlidingDistance(TimeSerie instance, Shapelet candidate){
 	double min_distance = INFINITY;
 
-	int candidate_size = sizeof(getSequence(candidate))/sizeof(double);
-	int instance_size = sizeof(getSequence(instance))/sizeof(double);
+	int candidate_size = getTimeSerieSize(candidate);
+	int instance_size = getTimeSerieSize(instance);
 	TimeSerie ts1, ts2;
 	if(candidate_size<=instance_size){
 		ts1 = instance;
@@ -40,7 +51,7 @@ Distance computeEarlyAbandonSlidingDistance(TimeSerie instance, Shapelet candida
 	double ex1 = 0;
 	double ex2 = 0;
 	int i;
-	for(i=0; i<instance_size; i++){
+	for(i=1; i<instance_size; i++){
 		double d = getSequence(ts1)[i];
 		ex1 += d;
 		ex2 += d*d;
@@ -59,14 +70,15 @@ Distance computeEarlyAbandonSlidingDistance(TimeSerie instance, Shapelet candida
 			ex2-=t[j]*t[j];
 		}
 	}
-
-	return createDistance(sqrt(min_distance/candidate_size), instance, candidate);
+	double subsequence_distance = sqrt(min_distance/(double)candidate_size);
+	// printf("%lf\n", subsequence_distance);
+	return createDistance(subsequence_distance, instance, candidate);
 }
 
 double computeEuclideanDistance(double *sequence, double *t, int j, int candidate_size, double mean, double sigma, double min_distance){
 	double sum = 0;
 	int i;
-	for(i = 0; i<candidate_size && sum<min_distance; i++){
+	for(i = 1; i<candidate_size && sum<min_distance; i++){
 		double x = (t[i+j]-mean)/sigma - sequence[i]; //z-normalization
 		sum += x*x;
 	}
@@ -74,26 +86,61 @@ double computeEuclideanDistance(double *sequence, double *t, int j, int candidat
 }
 
 int getDistanceMapSize(DistanceMap d){
-	return d->size;
+	return d->size+1;
 }
 
+// distance are retrieved by ascending order
 Distance getDistance(DistanceMap map){
 	Distance result = getHeapValue(map->distances, 1);
 	deleteFromHeap(map->distances);
 	return result;
 }
 
+// distances are retrieved randomly
 Distance getDistanceByIndex(DistanceMap map, int index){
 	return getHeapValue(map->distances, index);
 }
 
 DistanceMap cloneDistanceMap(DistanceMap distance_map){
-	int size = distance_map->size;
+	int size = getDistanceMapSize(distance_map);
 	DistanceMap result = createDistanceMap(size);
-	Heap target = distance_map->distances;
 	int i;
-	for(i = 0; i<size; i++){
-		addToHeap(result->distances, getHeapValue(target, i));
+	for(i = 1; i<size; i++){
+		addDistance(result, getDistanceByIndex(distance_map, i));
 	} 
 	return result;
+}
+
+void testDistanceMap(){
+	DistanceMap dm = createDistanceMap(10);
+	double value1 = 12.5;
+	double value2 = 45.9;
+	double vector[10] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
+	double vector2[10] = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0};
+	TimeSerie ts = createTimeSerie(vector, 1, 10);
+	TimeSerie ts2 = createTimeSerie(vector2, 2, 10);
+	TimeSerie ts3 = createTimeSerie(vector2, 1, 10);
+	Distance d = createDistance(value1, ts, ts2);
+	Distance d2 = createDistance(value2, ts, ts3);
+	addDistance(dm, d);
+	addDistance(dm, d2);
+	displayDistanceMap(dm);
+
+	DistanceMap clone = cloneDistanceMap(dm);
+	displayDistanceMap(clone);
+	printf("%lf, ",getDistanceValue(getDistance(clone)));
+	printf("%lf,",getDistanceValue(getDistance(clone)));
+
+	destroyDistanceMap(dm);
+	destroyDistanceMap(clone);
+}
+
+void displayDistanceMap(DistanceMap d){
+	int i;
+	printf("\n");
+	for(i=1; i<getDistanceMapSize(d); i++){
+		Distance current_distance = getDistanceByIndex(d, i);
+		printf("%lf, %d\n", getDistanceValue(current_distance), getDistanceLabel(current_distance));
+	}
+	printf("\n");
 }

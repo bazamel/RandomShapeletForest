@@ -35,6 +35,12 @@ Heap createHeap(int size){
     return T;
 }
 
+void destroyHeap(Heap T){
+    // the inner distances are freed somewhere else
+    free(T->array);
+    free(T);
+}
+
 void addToHeap(Heap T, Distance distance){
     T->array[T->size] = distance;
     reorganizeUp(T,T->size);
@@ -42,17 +48,13 @@ void addToHeap(Heap T, Distance distance){
 }
 
 void deleteFromHeap(Heap T){
-    --(T->size);
+    --T->size;
     T->array[1] = T->array[T->size];
     reorganizeDown(T, 1);
 }
 
-void destroyHeap(Heap T){
-    free(T);
-}
-
 void reorganizeUp(Heap T, int s){
-    if(s != 1){
+    if(s > 1){
         int p = father(s);
         double distance1 = getDistanceValue(getHeapValue(T,p));
         double distance2 = getDistanceValue(getHeapValue(T,s));
@@ -91,6 +93,12 @@ Distance createDistance(double value, TimeSerie instance, TimeSerie shapelet){
     result->instance = instance;
     result->candidate = shapelet;
     return result;
+}
+
+void destroyDistance(Distance d){
+    free(d->instance);
+    free(d->candidate);
+    free(d);
 }
 
 double getDistanceValue(Distance distance){
